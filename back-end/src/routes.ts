@@ -111,4 +111,10 @@ export const Routes = [
     controller: GroupController,
     action: "getGroupStudents",
   },
+  {
+    method: "post",
+    route: "/group/run-group-filters",
+    controller: GroupController,
+    action: "runGroupFilters",
+  },
 ]
