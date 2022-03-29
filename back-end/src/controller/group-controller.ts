@@ -2,11 +2,17 @@ import { NextFunction, Request, Response } from "express"
 import { getRepository } from "typeorm"
 import { Group } from "../entity/group.entity"
 import { CreateGroupDto, UpdateGroupDto } from "../interface/group.interface"
+import { GroupStudent } from "../entity/group-student.entity"
+import { Student } from "../entity/student.entity"
+import { CreateGroupStudentIncidentInput, UpdateGroupStudentIncidentInput } from "../interface/group-student.interface"
+import { map } from "lodash"
 import { plainToClass} from "class-transformer"
 import { validate } from "class-validator"
 
 export class GroupController {
   private groupRepository = getRepository(Group)
+  private groupStudentsRepository = getRepository(GroupStudent)
+  private studentRepository = getRepository(Student)
 
   async allGroups(request: Request, response: Response, next: NextFunction) {
     // Task 1: 
@@ -89,9 +95,22 @@ export class GroupController {
   }
 
   async getGroupStudents(request: Request, response: Response, next: NextFunction) {
-    // Task 1: 
-        
-    // Return the list of Students that are in a Group
+    return (
+      await this.studentRepository.findByIds(
+        (await this.groupStudentsRepository.find({group_id: request.params.id})).map(
+          (groupStudent) => {return groupStudent.student_id}
+        )
+      )
+    ).map((student)=>{
+      if (student) {
+        return {
+          id: student.id,
+          first_name: student.first_name,
+          last_name: student.last_name,
+          full_name: `${student.first_name} ${student.last_name}`
+        }  
+      } else { return student }
+    });
   }
 
 
