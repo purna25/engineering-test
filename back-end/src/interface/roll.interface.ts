@@ -4,7 +4,7 @@ export interface CreateRollInput {
 }
 
 export interface UpdateRollInput {
-  id: number
-  name: string
-  completed_at: Date
+  id?: number
+  name?: string
+  completed_at?: Date
 }

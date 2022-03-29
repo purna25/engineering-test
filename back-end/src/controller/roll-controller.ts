@@ -11,7 +11,7 @@ export class RollController {
   private studentRollStateRepository = getRepository(StudentRollState)
 
   async allRolls(request: Request, response: Response, next: NextFunction) {
-    return this.rollRepository.find()
+    return await this.rollRepository.find()
   }
 
   async createRoll(request: Request, response: Response, next: NextFunction) {
@@ -23,26 +23,33 @@ export class RollController {
     }
     const roll = new Roll()
     roll.prepareToCreate(createRollInput)
-    return this.rollRepository.save(roll)
+    response.status(201)
+    return await this.rollRepository.save(roll)
   }
 
   async updateRoll(request: Request, response: Response, next: NextFunction) {
     const { body: params } = request
 
-    this.rollRepository.findOne(params.id).then((roll) => {
-      const updateRollInput: UpdateRollInput = {
-        id: params.id,
-        name: params.name,
-        completed_at: params.completed_at,
-      }
-      roll.prepareToUpdate(updateRollInput)
-      return this.rollRepository.save(roll)
+    return await this.rollRepository.findOne(params.id).then((roll) => {
+      if (roll) {
+        const updateRollInput: UpdateRollInput = {
+          id: params.id,
+          name: params.name,
+          completed_at: params.completed_at,
+        }
+        roll.prepareToUpdate(updateRollInput)
+        return this.rollRepository.save(roll)  
+      } else {return roll}
     })
   }
 
   async removeRoll(request: Request, response: Response, next: NextFunction) {
-    let rollToRemove = await this.rollRepository.findOne(request.params.id)
-    await this.rollRepository.remove(rollToRemove)
+    const { body: params } = request
+    if (params.id) {
+      return await this.rollRepository.findOne(params.id).then((roll) => {
+        return roll ? this.rollRepository.remove(roll) : roll
+      })
+    } else { return undefined }
   }
 
   async getRoll(request: Request, response: Response, next: NextFunction) {
