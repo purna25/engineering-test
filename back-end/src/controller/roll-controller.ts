@@ -53,7 +53,7 @@ export class RollController {
   }
 
   async getRoll(request: Request, response: Response, next: NextFunction) {
-    return this.studentRollStateRepository.find({ roll_id: request.params.id })
+    return await this.studentRollStateRepository.find({ roll_id: request.params.id })
   }
 
   async addStudentRollStates(request: Request, response: Response, next: NextFunction) {
@@ -70,7 +70,8 @@ export class RollController {
       return studentRollState
     })
 
-    return this.studentRollStateRepository.save(studentRollStates)
+    response.status(201)
+    return await this.studentRollStateRepository.save(studentRollStates)
   }
 
   async addStudentRollState(request: Request, response: Response, next: NextFunction) {
@@ -83,21 +84,25 @@ export class RollController {
     }
     const studentRollState = new StudentRollState()
     studentRollState.prepareToCreate(createStudentRollStateInput)
-    return this.studentRollStateRepository.save(studentRollState)
+
+    response.status(201)
+    return await this.studentRollStateRepository.save(studentRollState)
   }
 
   async updateStudentRollState(request: Request, response: Response, next: NextFunction) {
     const { body: params } = request
 
-    this.studentRollStateRepository.findOne(params.id).then((studentRollState) => {
-      const updateStudentRollStateInput: UpdateStudentRollStateInput = {
-        id: params.id,
-        roll_id: params.roll_id,
-        student_id: params.student_id,
-        state: params.state,
-      }
-      studentRollState.prepareToUpdate(updateStudentRollStateInput)
-      return this.studentRollStateRepository.save(studentRollState)
+    return await this.studentRollStateRepository.findOne(params.id).then((studentRollState) => {
+      if (studentRollState) {
+        const updateStudentRollStateInput: UpdateStudentRollStateInput = {
+          id: params.id,
+          roll_id: params.roll_id,
+          student_id: params.student_id,
+          state: params.state,
+        }
+        studentRollState.prepareToUpdate(updateStudentRollStateInput)
+        return this.studentRollStateRepository.save(studentRollState)  
+      } else { return studentRollState }
     })
   }
 }

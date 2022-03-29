@@ -5,8 +5,8 @@ export interface CreateStudentRollStateInput {
 }
 
 export interface UpdateStudentRollStateInput {
-  id: number
-  student_id: number
-  roll_id: number
-  state: string
+  id?: number
+  student_id?: number
+  roll_id?: number
+  state?: string
 }
