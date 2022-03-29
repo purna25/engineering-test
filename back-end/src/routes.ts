@@ -11,7 +11,7 @@ export const Routes = [
   },
   {
     method: "get",
-    route: "/student/get-by-id",
+    route: "/student/:id",
     controller: StudentController,
     action: "getStudent",
   },
