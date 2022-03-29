@@ -3,11 +3,13 @@
    "version": "0.0.1",
    "private": true,
    "description": "Awesome project developed with TypeORM.",
-   "devDependencies": {},
    "dependencies": {
       "@types/node": "^12.0.0",
       "body-parser": "^1.18.1",
+      "class-transformer": "^0.5.1",
+      "class-validator": "^0.13.2",
       "cors": "^2.8.5",
+      "date-fns": "^2.28.0",
       "express": "^4.15.4",
       "lodash": "^4.17.21",
       "reflect-metadata": "^0.1.10",
@@ -18,5 +20,8 @@
    },
    "scripts": {
       "start": "ts-node src/index.ts"
+   },
+   "devDependencies": {
+      "nodemon": "^2.0.15"
    }
 }
